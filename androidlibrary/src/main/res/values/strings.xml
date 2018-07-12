@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">AndroidLibrary</string>
+    <string name="android_library">This is a joke from java library in android library:</string>
+</resources>
