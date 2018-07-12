@@ -5,14 +5,12 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import com.example.android.androidlibrary.AndroidLibraryActivity;
-import com.example.android.javajokes.*;
+import com.example.android.javajokes.MyClass;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.extensions.android.json.AndroidJsonFactory;
 import com.google.api.client.googleapis.services.AbstractGoogleClientRequest;
@@ -22,7 +20,7 @@ import com.udacity.gradle.builditbigger.backend.myApi.MyApi;
 import java.io.IOException;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,7 +58,16 @@ public class MainActivity extends AppCompatActivity {
         //Toast.makeText(this, jokeFromJava, Toast.LENGTH_LONG).show();
 
         //Joke from GCE
-        new EndpointsAsyncTask().execute(this);
+        EndpointsAsyncTask endpointsAsyncTask = new EndpointsAsyncTask();
+
+        endpointsAsyncTask.setListener(new EndpointsAsyncTask.EndpointListener() {
+            @Override
+            public void onComplete(String joke) {
+                Intent intent = new Intent(getApplicationContext(), AndroidLibraryActivity.class);
+                intent.putExtra("joke",joke);
+                startActivity(intent);
+            }
+        }).execute(this);
 
         //Joke from android library
         /*Intent intent = new Intent(this, AndroidLibraryActivity.class);
@@ -73,6 +80,7 @@ public class MainActivity extends AppCompatActivity {
         MyClass mClass = new MyClass();
         return mClass.getJoke();
     }
+
 
 
 }
@@ -120,12 +128,11 @@ class EndpointsAsyncTask extends AsyncTask<Context, Void, String> {
     @Override
     protected void onPostExecute(String result) {
         //Toast.makeText(context, result, Toast.LENGTH_LONG).show();
-        Intent intent = new Intent(context, AndroidLibraryActivity.class);
-        intent.putExtra("joke",result);
-        context.startActivity(intent);
+        if (mListener != null)
+            mListener.onComplete(result);
     }
 
     public static interface EndpointListener {
-        public void onComplete(String joke, Exception e);
+        public void onComplete(String joke);
     }
 }
