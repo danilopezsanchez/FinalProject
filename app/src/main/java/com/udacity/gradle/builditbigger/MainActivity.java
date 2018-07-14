@@ -53,9 +53,6 @@ public class MainActivity extends AppCompatActivity{
 
     public void tellJoke(View view) {
 
-        //Joke from java library
-        //String jokeFromJava=getJokeFromJavaLibrary();
-        //Toast.makeText(this, jokeFromJava, Toast.LENGTH_LONG).show();
 
         //Joke from GCE
         EndpointsAsyncTask endpointsAsyncTask = new EndpointsAsyncTask();
@@ -68,11 +65,6 @@ public class MainActivity extends AppCompatActivity{
                 startActivity(intent);
             }
         }).execute(this);
-
-        //Joke from android library
-        /*Intent intent = new Intent(this, AndroidLibraryActivity.class);
-        intent.putExtra("joke",jokeFromJava);
-        startActivity(intent);*/
 
     }
 
@@ -121,7 +113,7 @@ class EndpointsAsyncTask extends AsyncTask<Context, Void, String> {
         try {
             return myApiService.sayHi().execute().getData();
         } catch (IOException e) {
-            return e.getMessage();
+            return null;
         }
     }
 
